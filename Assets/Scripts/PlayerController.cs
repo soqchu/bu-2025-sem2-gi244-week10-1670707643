@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
 
     private Animator playerAnim;
     private AudioSource playerAudio;
+    public static bool isDashing = false;
+
+    private int jumpCount = 0;
+    private int maxjumps = 2;
 
     public bool gameOver = false;
 
@@ -40,13 +44,33 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (jumpAction.triggered && isOnGround && !gameOver)
+        
+            
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                isDashing = true;
+            }
+            else
+            {
+                isDashing = false;
+            }
+
+           
+
+         if (jumpAction.triggered && !gameOver)
         {
-            rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
-            isOnGround = false;
-            playerAnim.SetTrigger("Jump_trig");
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(jumpSfx);
+            
+            if (isOnGround || jumpCount < maxjumps)
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+                isOnGround = false;
+                jumpCount++; 
+
+                playerAnim.SetTrigger("Jump_trig");
+                dirtParticle.Stop();
+                playerAudio.PlayOneShot(jumpSfx);
+            }
         }
     }
 
@@ -55,6 +79,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
+            jumpCount = 0; 
             dirtParticle.Play();
         }
         else if (collision.gameObject.CompareTag("Obstacle"))

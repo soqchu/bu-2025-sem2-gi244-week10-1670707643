@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject obstaclePrefab;
+    public GameObject[]  obstaclePrefab;
     public Vector3 spawnPos = new(25, 0, 0);
 
     public float startDelay = 2;
@@ -22,6 +22,9 @@ public class SpawnManager : MonoBehaviour
 
     void SpawnObstacle()
     {
-        Instantiate(obstaclePrefab, spawnPos, obstaclePrefab.transform.rotation);
+       int index = Random.Range(0, obstaclePrefab.Length);
+        GameObject prefab = obstaclePrefab[index];
+
+        Instantiate(prefab, spawnPos, prefab.transform.rotation);
     }
 }
